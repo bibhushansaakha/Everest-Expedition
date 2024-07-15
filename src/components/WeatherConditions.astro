@@ -1,0 +1,115 @@
+---
+export interface Props {
+  weather: {
+    condition: string;
+    temperature: number;
+    windSpeed: number;
+    visibility: number;
+  };
+}
+
+const { weather } = Astro.props;
+
+const getWeatherIcon = (condition: string): string => {
+  switch (condition.toLowerCase()) {
+    case 'clear':
+      return '/images/weather_icons/clear.png';
+    case 'cloudy':
+      return '/images/weather_icons/cloudy.png';
+    case 'snowy':
+      return '/images/weather_icons/snowy.png';
+    case 'stormy':
+      return '/images/weather_icons/stormy.png';
+    default:
+      return '/images/weather_icons/clear.png';
+  }
+};
+
+const getWeatherSeverity = (weather: Props['weather']): string => {
+  const { temperature, windSpeed, visibility } = weather;
+  if (temperature < -20 || windSpeed > 80 || visibility < 100) return 'Severe';
+  if (temperature < -10 || windSpeed > 60 || visibility < 500) return 'Challenging';
+  if (temperature < 0 || windSpeed > 40 || visibility < 1000) return 'Moderate';
+  return 'Favorable';
+};
+
+const weatherSeverity = getWeatherSeverity(weather);
+---
+
+<div class="weather-conditions">
+  <h2>Weather Conditions</h2>
+  <div class="weather-info">
+    <img src={getWeatherIcon(weather.condition)} alt={weather.condition} class="weather-icon" />
+    <div class="weather-details">
+      <p class="condition">{weather.condition}</p>
+      <p class="temperature">{weather.temperature}°C</p>
+      <p class="wind-speed">Wind: {weather.windSpeed} km/h</p>
+      <p class="visibility">Visibility: {weather.visibility} m</p>
+      <p class="severity">Severity: <span class={`severity-${weatherSeverity.toLowerCase()}`}>{weatherSeverity}</span></p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .weather-conditions {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .weather-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .weather-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .weather-details {
+    flex-grow: 1;
+  }
+
+  .weather-details p {
+    margin: 0.25rem 0;
+    font-size: 1rem;
+    color: #2c3e50;
+  }
+
+  .condition {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .temperature {
+    font-size: 1.1rem;
+  }
+
+  .severity {
+    font-weight: bold;
+  }
+
+  .severity-favorable { color: #2ecc71; }
+  .severity-moderate { color: #f39c12; }
+  .severity-challenging { color: #e67e22; }
+  .severity-severe { color: #e74c3c; }
+
+  @media (max-width: 768px) {
+    .weather-info {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+  

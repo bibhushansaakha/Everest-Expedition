@@ -1,0 +1,92 @@
+---
+export interface Props {
+  onClimb: () => void;
+  onRest: () => void;
+}
+
+const { onClimb, onRest } = Astro.props;
+---
+
+<div class="decision-maker">
+  <h2>Make Your Decision</h2>
+  <div class="decision-buttons">
+    <button class="climb-btn">Climb</button>
+    <button class="rest-btn">Rest</button>
+  </div>
+</div>
+
+<style>
+  .decision-maker {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .decision-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+  }
+
+  button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .climb-btn {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .climb-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .rest-btn {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .rest-btn:hover {
+    background-color: #c0392b;
+  }
+
+  @media (max-width: 768px) {
+    .decision-buttons {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  function handleDecisions() {
+    const climbBtn = document.querySelector('.climb-btn');
+    const restBtn = document.querySelector('.rest-btn');
+
+    climbBtn.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('climb'));
+    });
+
+    restBtn.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('rest'));
+    });
+  }
+
+  // Call handleDecisions when the component is mounted and after each update
+  document.addEventListener('astro:page-load', handleDecisions);
+  document.addEventListener('astro:after-swap', handleDecisions);
+</script>

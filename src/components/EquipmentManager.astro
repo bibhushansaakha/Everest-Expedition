@@ -1,0 +1,183 @@
+---
+export interface Equipment {
+  id: string;
+  name: string;
+  description: string;
+  effect: string;
+}
+
+export interface Props {
+  equipment: Equipment[];
+  onEquipmentChange: (equipment: Equipment, action: 'add' | 'remove') => void;
+}
+
+const { equipment, onEquipmentChange } = Astro.props;
+
+const availableEquipment: Equipment[] = [
+  { id: 'oxygen', name: 'Oxygen Tank', description: 'Provides extra oxygen', effect: '+20% oxygen efficiency' },
+  { id: 'boots', name: 'Insulated Boots', description: 'Keeps feet warm', effect: '+10% energy efficiency' },
+  { id: 'jacket', name: 'Down Jacket', description: 'Provides warmth', effect: '+15% cold resistance' },
+  { id: 'rope', name: 'Climbing Rope', description: 'Essential for safety', effect: '+5% climbing speed' },
+  { id: 'goggles', name: 'Snow Goggles', description: 'Protects eyes from snow blindness', effect: '+10% visibility in snow' },
+];
+---
+
+<div class="equipment-manager">
+  <h2>Equipment</h2>
+  <div class="equipment-lists">
+    <div class="equipment-section">
+      <h3>Available Equipment</h3>
+      <ul class="equipment-list">
+        {availableEquipment.map((item) => (
+          <li class="equipment-item" key={item.id}>
+            <h4>{item.name}</h4>
+            <p>{item.description}</p>
+            <p class="equipment-effect">{item.effect}</p>
+            <button class="equip-btn" data-equipment={JSON.stringify(item)}>Equip</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="equipment-section">
+      <h3>Equipped Items</h3>
+      <ul class="equipment-list equipped-list">
+        {equipment.map((item) => (
+          <li class="equipment-item" key={item.id}>
+            <h4>{item.name}</h4>
+            <p>{item.description}</p>
+            <p class="equipment-effect">{item.effect}</p>
+            <button class="unequip-btn" data-equipment={JSON.stringify(item)}>Unequip</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .equipment-manager {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .equipment-lists {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .equipment-section {
+    flex: 1;
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #34495e;
+    font-size: 1.2rem;
+  }
+
+  .equipment-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .equipment-item {
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .equipment-item h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+  }
+
+  .equipment-item p {
+    margin: 0.25rem 0;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+  }
+
+  .equipment-effect {
+    font-weight: bold;
+    color: #16a085;
+  }
+
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  .unequip-btn {
+    background-color: #e74c3c;
+  }
+
+  .unequip-btn:hover {
+    background-color: #c0392b;
+  }
+
+  @media (max-width: 768px) {
+    .equipment-lists {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  function handleEquipmentChange() {
+    const equipmentManager = document.querySelector('.equipment-manager');
+    const availableList = equipmentManager.querySelector('.equipment-list:not(.equipped-list)');
+    const equippedList = equipmentManager.querySelector('.equipped-list');
+
+    equipmentManager.addEventListener('click', (event) => {
+      const button = event.target.closest('button');
+      if (!button) return;
+
+      const listItem = button.closest('.equipment-item');
+      const equipment = JSON.parse(button.getAttribute('data-equipment'));
+
+      if (button.classList.contains('equip-btn')) {
+        equippedList.appendChild(listItem);
+        button.textContent = 'Unequip';
+        button.classList.remove('equip-btn');
+        button.classList.add('unequip-btn');
+        // Dispatch custom event for adding equipment
+        window.dispatchEvent(new CustomEvent('equipmentChange', { detail: { equipment, action: 'add' } }));
+      } else if (button.classList.contains('unequip-btn')) {
+        availableList.appendChild(listItem);
+        button.textContent = 'Equip';
+        button.classList.remove('unequip-btn');
+        button.classList.add('equip-btn');
+        // Dispatch custom event for removing equipment
+        window.dispatchEvent(new CustomEvent('equipmentChange', { detail: { equipment, action: 'remove' } }));
+      }
+    });
+  }
+
+  // Call handleEquipmentChange when the component is mounted and after each update
+  document.addEventListener('astro:page-load', handleEquipmentChange);
+  document.addEventListener('astro:after-swap', handleEquipmentChange);
+</script>

@@ -1,0 +1,132 @@
+---
+import PlayerInfo from './PlayerInfo.astro';
+import AltitudeTracker from './AltitudeTracker.astro';
+import OxygenEnergy from './OxygenEnergy.astro';
+import WeatherConditions from './WeatherConditions.astro';
+import DecisionMaker from './DecisionMaker.astro';
+import RandomEvents from './RandomEvents.astro';
+import DayCounter from './DayCounter.astro';
+import EquipmentManager from './EquipmentManager.astro';
+import RouteSelector from './RouteSelector.astro';
+import ClimberEncounter from './ClimberEncounter.astro';
+import AltitudeSickness from './AltitudeSickness.astro';
+import Scoreboard from './Scoreboard.astro';
+import GameOver from './GameOver.astro';
+
+import { gameLogic } from '../utils/gameLogic';
+import { weatherGenerator } from '../utils/weatherGenerator';
+import { eventGenerator } from '../utils/eventGenerator';
+import { scoreCalculator } from '../utils/scoreCalculator';
+
+let gameState = {
+  altitude: 0,
+  oxygen: 100,
+  energy: 100,
+  day: 1,
+  weather: weatherGenerator.generateWeather(),
+  events: [],
+  equipment: [],
+  route: null,
+  encounters: [],
+  altitudeSickness: 0,
+  score: 0,
+  isGameOver: false,
+};
+
+const handleClimb = () => {
+  if (gameState.isGameOver) return;
+
+  const climbResult = gameLogic.climb(gameState);
+  gameState = { ...gameState, ...climbResult };
+
+  if (Math.random() < 0.2) { // 20% chance of random event
+    const newEvent = eventGenerator.generateEvent(gameState);
+    gameState.events.push(newEvent);
+  }
+
+  gameState.score = scoreCalculator.calculateScore(gameState);
+  checkGameOver();
+};
+
+const handleRest = () => {
+  if (gameState.isGameOver) return;
+
+  const restResult = gameLogic.rest(gameState);
+  gameState = { ...gameState, ...restResult };
+
+  gameState.score = scoreCalculator.calculateScore(gameState);
+  checkGameOver();
+};
+
+const handleEquipmentChange = (equipment, action) => {
+  if (action === 'add') {
+    gameState.equipment.push(equipment);
+  } else {
+    gameState.equipment = gameState.equipment.filter(e => e.id !== equipment.id);
+  }
+};
+
+const handleRouteSelection = (route) => {
+  gameState.route = route;
+};
+
+const handleEventResolution = (event) => {
+  const eventResult = gameLogic.resolveEvent(gameState, event);
+  gameState = { ...gameState, ...eventResult };
+  gameState.events = gameState.events.filter(e => e.id !== event.id);
+};
+
+const checkGameOver = () => {
+  if (gameState.altitude >= 8848) {
+    gameState.isGameOver = true;
+    gameState.gameOverReason = 'summit';
+  } else if (gameState.oxygen <= 0 || gameState.energy <= 0) {
+    gameState.isGameOver = true;
+    gameState.gameOverReason = 'resources';
+  } else if (gameState.altitudeSickness >= 100) {
+    gameState.isGameOver = true;
+    gameState.gameOverReason = 'sickness';
+  }
+};
+---
+
+<div class="game-board">
+  {gameState.isGameOver ? (
+    <GameOver reason={gameState.gameOverReason} score={gameState.score} />
+  ) : (
+    <>
+      <PlayerInfo altitude={gameState.altitude} oxygen={gameState.oxygen} energy={gameState.energy} />
+      <AltitudeTracker altitude={gameState.altitude} />
+      <OxygenEnergy oxygen={gameState.oxygen} energy={gameState.energy} />
+      <WeatherConditions weather={gameState.weather} />
+      <DecisionMaker onClimb={handleClimb} onRest={handleRest} />
+      <RandomEvents events={gameState.events} onResolve={handleEventResolution} />
+      <DayCounter day={gameState.day} />
+      <EquipmentManager equipment={gameState.equipment} onEquipmentChange={handleEquipmentChange} />
+      <RouteSelector selectedRoute={gameState.route} onRouteSelect={handleRouteSelection} />
+      <ClimberEncounter encounters={gameState.encounters} />
+      <AltitudeSickness level={gameState.altitudeSickness} />
+      <Scoreboard score={gameState.score} />
+    </>
+  )}
+</div>
+
+<style>
+  .game-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    font-family: 'MountainFont-Regular', sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .game-board {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

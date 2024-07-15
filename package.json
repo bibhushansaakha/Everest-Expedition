@@ -1,0 +1,31 @@
+{
+  "name": "everest-expedition",
+  "version": "1.0.0",
+  "description": "A thrilling Mount Everest climbing simulation game",
+  "main": "index.js",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "keywords": [
+    "everest",
+    "climbing",
+    "simulation",
+    "game",
+    "astro"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "astro": "^2.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-astro": "^0.23.0",
+    "prettier": "^2.0.0",
+    "prettier-plugin-astro": "^0.8.0"
+  }
+}

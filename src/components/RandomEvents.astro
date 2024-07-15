@@ -1,0 +1,100 @@
+---
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  effect: string;
+}
+
+export interface Props {
+  events: Event[];
+  onResolve: (event: Event) => void;
+}
+
+const { events, onResolve } = Astro.props;
+---
+
+<div class="random-events">
+  <h2>Random Events</h2>
+  {events.length === 0 ? (
+    <p class="no-events">No current events</p>
+  ) : (
+    <ul class="event-list">
+      {events.map((event) => (
+        <li class="event-item" key={event.id}>
+          <h3>{event.title}</h3>
+          <p>{event.description}</p>
+          <p class="event-effect">{event.effect}</p>
+          <button onclick={() => onResolve(event)}>Resolve</button>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<style>
+  .random-events {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .no-events {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+  }
+
+  .event-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .event-item {
+    background-color: #f39c12;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .event-item h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+  }
+
+  .event-item p {
+    margin: 0.5rem 0;
+    color: #34495e;
+  }
+
+  .event-effect {
+    font-weight: bold;
+    color: #c0392b;
+  }
+
+  button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #27ae60;
+  }
+</style>

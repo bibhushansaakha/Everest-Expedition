@@ -1,0 +1,93 @@
+---
+export interface Props {
+  reason: 'summit_reached' | 'out_of_oxygen' | 'exhausted' | 'altitude_sickness';
+  score: number;
+}
+
+const { reason, score } = Astro.props;
+
+const getGameOverMessage = (reason: Props['reason']): string => {
+  switch (reason) {
+    case 'summit_reached':
+      return 'Congratulations! You have reached the summit of Mount Everest!';
+    case 'out_of_oxygen':
+      return 'Game Over: You have run out of oxygen. The expedition has failed.';
+    case 'exhausted':
+      return 'Game Over: You are too exhausted to continue. The expedition has failed.';
+    case 'altitude_sickness':
+      return 'Game Over: Severe altitude sickness has forced you to abandon the expedition.';
+  }
+};
+
+const message = getGameOverMessage(reason);
+---
+
+<div class="game-over">
+  <h2>{reason === 'summit_reached' ? 'Victory!' : 'Game Over'}</h2>
+  <p class="game-over-message">{message}</p>
+  <div class="final-score">
+    <h3>Final Score</h3>
+    <span class="score-number">{score}</span>
+  </div>
+  <button class="play-again">Play Again</button>
+</div>
+
+<style>
+  .game-over {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 2rem;
+  }
+
+  .game-over-message {
+    font-size: 1.2rem;
+    color: #34495e;
+    margin-bottom: 2rem;
+  }
+
+  .final-score {
+    background-color: #f39c12;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .final-score h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  .score-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+  }
+
+  .play-again {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .play-again:hover {
+    background-color: #27ae60;
+  }
+</style>

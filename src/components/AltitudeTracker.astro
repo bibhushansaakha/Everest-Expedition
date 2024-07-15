@@ -1,0 +1,105 @@
+---
+export interface Props {
+  altitude: number;
+}
+
+const { altitude } = Astro.props;
+const summitAltitude = 8848; // Mount Everest summit in meters
+const progressPercentage = (altitude / summitAltitude) * 100;
+
+const getAltitudeZone = (alt: number): string => {
+  if (alt < 1500) return 'Base Camp';
+  if (alt < 3500) return 'Low Altitude';
+  if (alt < 5500) return 'High Altitude';
+  if (alt < 7500) return 'Very High Altitude';
+  return 'Extreme Altitude';
+};
+
+const altitudeZone = getAltitudeZone(altitude);
+---
+
+<div class="altitude-tracker">
+  <h2>Altitude Progress</h2>
+  <div class="progress-bar">
+    <div class="progress" style={`width: ${progressPercentage}%`}></div>
+  </div>
+  <div class="altitude-info">
+    <span class="current-altitude">{altitude.toFixed(2)} m</span>
+    <span class="altitude-zone">{altitudeZone}</span>
+  </div>
+  <div class="checkpoints">
+    <div class="checkpoint" style="left: 0%">Base Camp</div>
+    <div class="checkpoint" style="left: 25%">Camp 1</div>
+    <div class="checkpoint" style="left: 50%">Camp 2</div>
+    <div class="checkpoint" style="left: 75%">Camp 3</div>
+    <div class="checkpoint" style="left: 100%">Summit</div>
+  </div>
+</div>
+
+<style>
+  .altitude-tracker {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .progress {
+    height: 100%;
+    background-color: #3498db;
+    transition: width 0.5s ease-in-out;
+  }
+
+  .altitude-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .current-altitude {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  .altitude-zone {
+    font-size: 1rem;
+    color: #7f8c8d;
+  }
+
+  .checkpoints {
+    position: relative;
+    height: 20px;
+  }
+
+  .checkpoint {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .checkpoints {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+export interface Encounter {
+  id: string;
+  climberName: string;
+  description: string;
+  options: {
+    text: string;
+    effect: string;
+  }[];
+}
+
+export interface Props {
+  encounters: Encounter[];
+}
+
+const { encounters } = Astro.props;
+---
+
+<div class="climber-encounter">
+  <h2>Climber Encounters</h2>
+  {encounters.length === 0 ? (
+    <p class="no-encounters">No current encounters</p>
+  ) : (
+    <ul class="encounter-list">
+      {encounters.map((encounter) => (
+        <li class="encounter-item" key={encounter.id}>
+          <h3>{encounter.climberName}</h3>
+          <p>{encounter.description}</p>
+          <div class="encounter-options">
+            {encounter.options.map((option, index) => (
+              <div class="option">
+                <button>{option.text}</button>
+                <p class="option-effect">{option.effect}</p>
+              </div>
+            ))}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<style>
+  .climber-encounter {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .no-encounters {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+  }
+
+  .encounter-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .encounter-item {
+    background-color: #f39c12;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .encounter-item h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+  }
+
+  .encounter-item p {
+    margin: 0.5rem 0;
+    color: #34495e;
+  }
+
+  .encounter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .option {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  button {
+    width: 100%;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  .option-effect {
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    font-style: italic;
+  }
+</style>

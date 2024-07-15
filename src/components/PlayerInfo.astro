@@ -1,0 +1,74 @@
+---
+export interface Props {
+  altitude: number;
+  oxygen: number;
+  energy: number;
+}
+
+const { altitude, oxygen, energy } = Astro.props;
+---
+
+<div class="player-info">
+  <h2>Climber Status</h2>
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="info-label">Altitude:</span>
+      <span class="info-value">{altitude.toFixed(2)} m</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Oxygen:</span>
+      <span class="info-value">{oxygen.toFixed(2)}%</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Energy:</span>
+      <span class="info-value">{energy.toFixed(2)}%</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .player-info {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 0.25rem;
+  }
+
+  .info-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  @media (max-width: 768px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

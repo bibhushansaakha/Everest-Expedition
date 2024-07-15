@@ -1,0 +1,48 @@
+---
+export interface Props {
+  day: number;
+}
+
+const { day } = Astro.props;
+---
+
+<div class="day-counter">
+  <h2>Expedition Day</h2>
+  <div class="day-display">
+    <span class="day-number">{day}</span>
+  </div>
+</div>
+
+<style>
+  .day-counter {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+  }
+
+  .day-display {
+    background-color: #3498db;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .day-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+  }
+</style>

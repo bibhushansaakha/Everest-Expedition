@@ -1,0 +1,56 @@
+---
+export interface Props {
+  score: number;
+}
+
+const { score } = Astro.props;
+---
+
+<div class="scoreboard">
+  <h2>Expedition Score</h2>
+  <div class="score-display">
+    <span class="score-number">{score}</span>
+  </div>
+  <p class="score-explanation">Your score is based on altitude reached, resources managed, and challenges overcome.</p>
+</div>
+
+<style>
+  .scoreboard {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+  }
+
+  .score-display {
+    background-color: #f39c12;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 1rem;
+  }
+
+  .score-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+  }
+
+  .score-explanation {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+</style>

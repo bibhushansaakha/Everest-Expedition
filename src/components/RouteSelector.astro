@@ -1,0 +1,174 @@
+---
+export interface Route {
+  id: string;
+  name: string;
+  difficulty: string;
+  description: string;
+}
+
+export interface Props {
+  selectedRoute: Route | null;
+  onRouteSelect: (route: Route) => void;
+}
+
+const { selectedRoute } = Astro.props;
+
+const availableRoutes: Route[] = [
+  {
+    id: 'standard',
+    name: 'South Col Route',
+    difficulty: 'Moderate',
+    description: 'The most common route to the summit, following the southeast ridge.',
+  },
+  {
+    id: 'western-cwm',
+    name: 'Western Cwm Route',
+    difficulty: 'Challenging',
+    description: 'A more technical route through the Western Cwm and Lhotse Face.',
+  },
+  {
+    id: 'north-col',
+    name: 'North Col Route',
+    difficulty: 'Difficult',
+    description: 'The original route from Tibet, featuring exposed ridges and harsh weather.',
+  },
+];
+---
+
+<div class="route-selector">
+  <h2>Select Your Route</h2>
+  <div class="route-options">
+    {availableRoutes.map((route) => (
+      <div class={`route-option ${selectedRoute?.id === route.id ? 'selected' : ''}`} data-route={JSON.stringify(route)}>
+        <h3>{route.name}</h3>
+        <p class="route-difficulty">Difficulty: {route.difficulty}</p>
+        <p>{route.description}</p>
+        <button class="select-route-btn">
+          {selectedRoute?.id === route.id ? 'Selected' : 'Select'}
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .route-selector {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .route-options {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .route-option {
+    flex: 1;
+    min-width: 250px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    padding: 1rem;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .route-option:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .route-option.selected {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .route-option h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+  }
+
+  .route-option.selected h3 {
+    color: white;
+  }
+
+  .route-difficulty {
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 0.5rem;
+  }
+
+  .route-option.selected .route-difficulty {
+    color: #f39c12;
+  }
+
+  .route-option p {
+    margin-bottom: 1rem;
+    color: #7f8c8d;
+  }
+
+  .route-option.selected p {
+    color: #ecf0f1;
+  }
+
+  button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #27ae60;
+  }
+
+  .route-option.selected button {
+    background-color: #e74c3c;
+  }
+
+  .route-option.selected button:hover {
+    background-color: #c0392b;
+  }
+
+  @media (max-width: 768px) {
+    .route-options {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  function handleRouteSelection() {
+    const routeSelector = document.querySelector('.route-selector');
+    const routeOptions = routeSelector.querySelectorAll('.route-option');
+
+    routeOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const route = JSON.parse(option.getAttribute('data-route'));
+        routeOptions.forEach(r => r.classList.remove('selected'));
+        option.classList.add('selected');
+        option.querySelector('button').textContent = 'Selected';
+        
+        // Dispatch custom event for route selection
+        window.dispatchEvent(new CustomEvent('routeSelect', { detail: { route } }));
+      });
+    });
+  }
+
+  // Call handleRouteSelection when the component is mounted and after each update
+  document.addEventListener('astro:page-load', handleRouteSelection);
+  document.addEventListener('astro:after-swap', handleRouteSelection);
+</script>
