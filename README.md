@@ -1,6 +1,6 @@
 # Everest Expedition
 
-![Everest Expedition Logo](public/images/logo.png)
+![Everest Expedition Logo](public/favicon.ico)
 
 ## Overview
 
