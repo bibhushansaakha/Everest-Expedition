@@ -20,7 +20,7 @@ Everest Expedition is an immersive, browser-based simulation game that challenge
 ## Installation
 
 1. Clone the repository:
-git clone https://github.com/yourusername/everest-expedition.git
+git clone https://github.com/bibhushansaakha/everest-expedition.git
 
 
 2. Navigate to the project directory:
